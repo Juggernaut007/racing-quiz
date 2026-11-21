@@ -1,0 +1,4 @@
+# Only the game folder is served (see outputDirectory in vercel.json).
+racing-quiz/test/
+node_modules/
+*.pdf
