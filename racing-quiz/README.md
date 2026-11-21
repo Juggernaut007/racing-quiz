@@ -38,20 +38,29 @@ and confirm the first finishes in round 14 and the second stays at 0 MPH.
 
 ## Deploy to Vercel
 
-The site is fully static - there is no build step, so Vercel just uploads the
-folder. Deploy **from this `racing-quiz` directory**, not from the repository root.
+The site is fully static - there is no build step, so Vercel just serves the
+folder. The app lives in the `racing-quiz/` subfolder of this repo, which is the
+one setting that matters when importing.
+
+### Via the Vercel dashboard (git integration)
+
+1. [vercel.com/new](https://vercel.com/new) &rarr; import `Juggernaut007/racing-quiz`
+2. **Root Directory: `racing-quiz`** - click Edit and pick the folder. Without
+   this, Vercel serves the repo root and you get a 404.
+3. Framework Preset: **Other**. Leave Build Command and Install Command empty.
+4. Deploy. Every push to `main` redeploys from then on.
+
+### Via the CLI
 
 ```sh
 cd "04. Car Racing game/racing-quiz"
 npx vercel login      # one time, opens a browser
-npx vercel --prod     # answer: scope = your account, name = racing-quiz, dir = ./
+npx vercel --prod     # run from this folder, so it is the deployment root
 ```
 
-`vercel.json` pins `framework: null` and `outputDirectory: "."`, so no framework
-is auto-detected and nothing is built. `questions.json` and `sw.js` are served
-with `must-revalidate` so a new deploy is picked up rather than cached forever.
-
-Redeploy after a change with `npx vercel --prod` from the same folder.
+`vercel.json` pins `framework: null` and `outputDirectory: "."`, so nothing is
+auto-detected and nothing is built. `questions.json` and `sw.js` are served with
+`must-revalidate` so a new deploy is picked up rather than cached forever.
 
 ## Offline support
 
