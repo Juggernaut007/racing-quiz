@@ -1,0 +1,3 @@
+# The deployed site is static - unit tests are not part of it.
+test/
+node_modules/

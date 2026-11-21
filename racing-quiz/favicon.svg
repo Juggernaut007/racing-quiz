@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#1d6fd0" />
+  <!-- road -->
+  <rect x="0" y="40" width="64" height="4" fill="#e8a300" />
+  <!-- car, same shape as assets/car.svg -->
+  <g transform="translate(4 16) scale(0.82)">
+    <path d="M2 25h64v-6c0-2.2-1.6-3.6-3.8-3.6h-5.4l-6.3-7.6C49.3 6.6 47.9 6 46.4 6H24.6c-1.6 0-3 .7-4 1.9l-5.4 7.5H5.8C3.6 15.4 2 16.8 2 19z"
+          fill="#e63946" stroke="rgba(0,0,0,0.45)" stroke-width="2" stroke-linejoin="round" />
+    <path d="M25 9.5h10.5v5.9H20.4z" fill="#d6e9ff" />
+    <path d="M38 9.5h7.4l5 5.9H38z" fill="#d6e9ff" />
+    <circle cx="18" cy="26" r="6.4" fill="#1d2329" />
+    <circle cx="50" cy="26" r="6.4" fill="#1d2329" />
+  </g>
+</svg>

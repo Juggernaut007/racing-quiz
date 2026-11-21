@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Grade 2 car racing quiz game: answer Maths, Science and General Knowledge questions to speed up your car." />
+    <title>Racing Quiz</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icon-192.png" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#1d6fd0" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="sw-register.js" defer></script>
+  </head>
+  <body>
+    <div id="app">
+      <!-- ================================================= SETUP SCREEN -->
+      <section id="screen-setup" class="screen" aria-labelledby="setup-title">
+        <h1 id="setup-title">&#127950; Racing Quiz</h1>
+        <p class="lead">
+          Answer a question to speed up. Correct = +10 MPH, wrong = &minus;2 MPH.
+          First car to 100 miles wins.
+        </p>
+
+        <div class="panel">
+          <h2>1. How many drivers?</h2>
+          <div class="row" id="driver-count" role="group" aria-label="Number of drivers">
+            <button type="button" class="btn-count" data-count="1" aria-pressed="false">1</button>
+            <button type="button" class="btn-count" data-count="2" aria-pressed="false">2</button>
+            <button type="button" class="btn-count" data-count="3" aria-pressed="false">3</button>
+            <button type="button" class="btn-count" data-count="4" aria-pressed="false">4</button>
+            <button type="button" class="btn-count" data-count="5" aria-pressed="false">5</button>
+          </div>
+          <p class="rules-note">1 to 5 drivers share one device and take turns in this order.</p>
+        </div>
+
+        <div class="panel">
+          <h2>2. Names and car colours</h2>
+          <div class="driver-list" id="driver-list"></div>
+        </div>
+
+        <div class="panel">
+          <h2>3. Subjects and timer</h2>
+          <div class="toggles" id="subject-toggles" role="group" aria-label="Subjects"></div>
+          <div class="toggles" style="margin-top: 14px">
+            <button type="button" class="toggle" id="timer-toggle" aria-pressed="true">
+              <span aria-hidden="true">&#9201;</span>
+              <span>30 second timer</span>
+              <span class="toggle-state" id="timer-state">on</span>
+            </button>
+          </div>
+          <p class="rules-note" style="margin-top: 12px">
+            With the timer on, running out of time counts as a wrong answer.
+          </p>
+        </div>
+
+        <div class="row">
+          <button type="button" class="btn-primary" id="start-race">Start race &#128663;</button>
+        </div>
+        <p class="error" id="setup-error" role="alert"></p>
+      </section>
+
+      <!-- ================================================== RACE SCREEN -->
+      <section id="screen-race" class="screen" hidden aria-labelledby="race-title">
+        <h1 id="race-title" class="sr-only">Race in progress</h1>
+        <div class="race-head">
+          <div class="badges">
+            <span class="badge" id="round-badge">Round 1</span>
+            <span class="badge badge-turn" id="turn-badge">Turn: &mdash;</span>
+            <span class="badge" id="progress-badge">100 mile track</span>
+          </div>
+          <div class="row">
+            <button type="button" id="pause-btn">&#9208; Pause</button>
+          </div>
+        </div>
+
+        <div class="track" id="track" aria-label="Race track"></div>
+
+        <div class="question-card" id="question-card">
+          <div class="question-top">
+            <span class="subject-badge" id="subject-badge">Maths</span>
+            <span class="countdown" id="countdown" aria-live="off">&#9201; 30s</span>
+          </div>
+          <p class="question-text" id="question-text">Loading question&hellip;</p>
+          <div class="options" id="options" role="group" aria-label="Answer options"></div>
+          <p class="feedback" id="feedback" role="status" aria-live="assertive"></p>
+          <div class="question-actions">
+            <button type="button" id="read-aloud">&#128266; Read aloud</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- =============================================== RESULTS SCREEN -->
+      <section id="screen-results" class="screen" hidden aria-labelledby="results-title">
+        <h1 id="results-title" class="sr-only">Race results</h1>
+        <div class="winner-banner">
+          <span class="trophy" aria-hidden="true">&#127942;</span>
+          <p class="winner-name" id="winner-name">&mdash;</p>
+          <p class="winner-sub" id="winner-sub"></p>
+        </div>
+
+        <div class="panel">
+          <table>
+            <caption>Final standings</caption>
+            <thead>
+              <tr>
+                <th scope="col">Place</th>
+                <th scope="col">Driver</th>
+                <th scope="col" class="num">Distance</th>
+                <th scope="col" class="num">Speed</th>
+                <th scope="col" class="num">Correct</th>
+              </tr>
+            </thead>
+            <tbody id="ranking-body"></tbody>
+          </table>
+        </div>
+
+        <div class="row">
+          <button type="button" class="btn-primary" id="play-again">Play again</button>
+          <button type="button" id="new-players">New players</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- =============================================== PAUSE OVERLAY -->
+    <div class="overlay" id="overlay-pause" hidden role="dialog" aria-modal="true" aria-labelledby="pause-title">
+      <div class="overlay-box">
+        <h2 id="pause-title">&#9208; Paused</h2>
+        <p class="lead" style="margin-bottom: 20px">The timer is stopped.</p>
+        <div class="row">
+          <button type="button" class="btn-primary" id="resume-btn">Resume</button>
+          <button type="button" id="quit-btn">Quit to setup</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="ui.js"></script>
+  </body>
+</html>

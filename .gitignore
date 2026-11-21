@@ -1,0 +1,10 @@
+# Vercel CLI link + build output
+.vercel/
+
+# Node (the app itself has no dependencies; this is just in case)
+node_modules/
+
+# OS cruft
+Thumbs.db
+desktop.ini
+.DS_Store
