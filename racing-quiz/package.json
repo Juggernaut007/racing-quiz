@@ -2,7 +2,7 @@
   "name": "racing-quiz",
   "version": "1.0.0",
   "private": true,
-  "description": "Grade 2 car racing quiz game. No dependencies, no build step.",
+  "description": "STD V F1 racing quiz game. No dependencies, no build step.",
   "type": "module",
   "scripts": {
     "test": "node --test",

@@ -1,7 +1,7 @@
 {
   "name": "F1 Racing Quiz",
   "short_name": "F1 Quiz",
-  "description": "Grade 2 car racing quiz game: answer Maths, Science and General Knowledge questions to speed up your car.",
+  "description": "STD V F1 racing quiz game: answer Maths, Science and General Knowledge questions to speed up your car.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

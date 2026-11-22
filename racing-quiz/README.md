@@ -1,6 +1,6 @@
 # F1 Racing Quiz
 
-An F1 racing quiz game for Grade 2 students, in a black & purple theme.
+An F1 racing quiz game for STD V (Class 5) students, in a black & purple theme.
 © 2026 Aayansh Panda. All rights reserved. Up to 5 drivers share one device and
 race on a 100-mile track by answering Maths, General Science and General Knowledge
 questions. A correct answer adds 10 MPH, a wrong answer or a timeout takes away
