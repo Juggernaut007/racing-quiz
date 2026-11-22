@@ -4,7 +4,7 @@
  * Bump CACHE_NAME whenever a shell file changes, otherwise tablets that already
  * installed the game keep serving the old copy.
  */
-const CACHE_NAME = 'racing-quiz-v1';
+const CACHE_NAME = 'racing-quiz-v2';
 
 const SHELL = [
   './',

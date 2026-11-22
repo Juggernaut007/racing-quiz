@@ -1,23 +1,30 @@
-/* Racing Quiz - Grade 2 car racing quiz game.
+/* F1 Racing Quiz - Grade 2 racing quiz game. Black & purple theme.
    Big targets: answer buttons >= 64px tall, answer text >= 24px (UI section).
    Colour is never the only signal: icons and words go with every flash (N5). */
 
 :root {
-  --ink: #15202b;
-  --ink-soft: #4a5a6a;
-  --paper: #f4f7fb;
-  --card: #ffffff;
-  --line: #d3dde8;
-  --accent: #1d6fd0;
-  --accent-dark: #17589f;
-  --right: #1e8e4e;
-  --right-soft: #d8f3e3;
-  --wrong: #d2691e;
-  --wrong-soft: #fde8d6;
-  --asphalt: #3c4650;
-  --asphalt-line: #f4d35e;
+  --ink: #f4efff;
+  --ink-soft: #bcaed8;
+  --paper: #0b0712;
+  --card: #150e22;
+  --card-2: #1e1430;
+  --line: #3b2a5c;
+  --accent: #7c3aed; /* white text on this passes AA */
+  --accent-dark: #5b21b6;
+  --accent-bright: #a78bfa;
+  --glow: rgba(139, 92, 246, 0.45);
+  --right: #34d399;
+  --right-soft: rgba(52, 211, 153, 0.16);
+  --wrong: #fb923c;
+  --wrong-soft: rgba(251, 146, 60, 0.16);
+  --asphalt: #1b1922;
+  --asphalt-line: rgba(255, 255, 255, 0.35);
+  --kerb-a: #e11d48;
+  --kerb-b: #f4f4f5;
+  --gold: #f5c542;
   --radius: 14px;
-  --shadow: 0 2px 6px rgba(21, 32, 43, 0.12);
+  --shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+  color-scheme: dark;
 }
 
 * {
@@ -31,18 +38,27 @@ body {
 }
 
 body {
-  background: var(--paper);
+  background:
+    radial-gradient(1200px 600px at 85% -10%, rgba(124, 58, 237, 0.28), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(168, 85, 247, 0.18), transparent 60%),
+    var(--paper);
+  background-attachment: fixed;
   color: var(--ink);
   font-family: "Segoe UI", Verdana, Tahoma, sans-serif;
   font-size: 18px;
   line-height: 1.45;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   -webkit-text-size-adjust: 100%;
 }
 
 #app {
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px 20px 48px;
+  padding: 20px 20px 32px;
+  flex: 1 0 auto;
 }
 
 .screen[hidden],
@@ -59,11 +75,27 @@ h3 {
 }
 
 h1 {
-  font-size: 40px;
+  font-size: 44px;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.title-accent {
+  background: linear-gradient(90deg, #c4b5fd, #a855f7 60%, #7c3aed);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.title-flag {
+  font-style: normal;
 }
 
 h2 {
-  font-size: 30px;
+  font-size: 28px;
+  color: var(--accent-bright);
 }
 
 h3 {
@@ -77,7 +109,7 @@ h3 {
 }
 
 .panel {
-  background: var(--card);
+  background: linear-gradient(180deg, var(--card-2), var(--card));
   border: 2px solid var(--line);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -99,40 +131,47 @@ button {
   font-size: 20px;
   font-weight: 600;
   color: var(--ink);
-  background: #fff;
+  background: var(--card-2);
   border: 2px solid var(--line);
   border-radius: 12px;
   padding: 12px 20px;
   min-height: 52px;
   cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s, transform 0.1s;
 }
 
 button:hover:not(:disabled) {
-  border-color: var(--accent);
+  border-color: var(--accent-bright);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 button:focus-visible {
-  outline: 4px solid var(--accent);
+  outline: 4px solid var(--accent-bright);
   outline-offset: 2px;
 }
 
 button:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
 .btn-primary {
-  background: var(--accent);
+  background: linear-gradient(180deg, #8b5cf6, var(--accent));
   border-color: var(--accent-dark);
   color: #fff;
   font-size: 26px;
+  font-weight: 800;
   min-height: 68px;
   padding: 14px 36px;
+  box-shadow: 0 0 24px var(--glow);
 }
 
 .btn-primary:hover:not(:disabled) {
   background: var(--accent-dark);
-  border-color: var(--accent-dark);
+  border-color: var(--accent-bright);
 }
 
 .btn-count {
@@ -142,8 +181,9 @@ button:disabled {
 
 .btn-count[aria-pressed="true"] {
   background: var(--accent);
-  border-color: var(--accent-dark);
+  border-color: var(--accent-bright);
   color: #fff;
+  box-shadow: 0 0 16px var(--glow);
 }
 
 /* Answer buttons: the >= 64px tall, >= 24px text rule. */
@@ -156,8 +196,12 @@ button:disabled {
   font-size: 26px;
   text-align: left;
   padding: 14px 20px;
-  background: #fff;
+  background: var(--card-2);
   border: 3px solid var(--line);
+}
+
+.answer-btn:hover:not(:disabled) {
+  background: #281a42;
 }
 
 .answer-btn .answer-key {
@@ -165,8 +209,9 @@ button:disabled {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--paper);
-  border: 2px solid var(--line);
+  background: var(--accent);
+  color: #fff;
+  border: 2px solid var(--accent-bright);
   display: grid;
   place-items: center;
   font-size: 20px;
@@ -175,11 +220,13 @@ button:disabled {
 .answer-btn.is-right {
   background: var(--right-soft);
   border-color: var(--right);
+  opacity: 1;
 }
 
 .answer-btn.is-wrong {
   background: var(--wrong-soft);
   border-color: var(--wrong);
+  opacity: 1;
 }
 
 /* ----------------------------------------------------------- setup screen */
@@ -199,14 +246,20 @@ input[type="text"] {
   font-family: inherit;
   font-size: 22px;
   padding: 12px 14px;
+  color: var(--ink);
+  background: var(--paper);
   border: 2px solid var(--line);
   border-radius: 12px;
   min-height: 52px;
   width: 100%;
 }
 
+input[type="text"]::placeholder {
+  color: #7d6e9a;
+}
+
 input[type="text"]:focus-visible {
-  outline: 4px solid var(--accent);
+  outline: 4px solid var(--accent-bright);
   outline-offset: 1px;
 }
 
@@ -221,7 +274,7 @@ input[type="text"]:focus-visible {
   border-left: 10px solid var(--line);
   border-radius: 12px;
   padding: 16px;
-  background: #fbfdff;
+  background: var(--card);
 }
 
 .driver-card h3 {
@@ -249,8 +302,8 @@ input[type="text"]:focus-visible {
 }
 
 .swatch[aria-pressed="true"] {
-  border-color: var(--ink);
-  box-shadow: 0 0 0 4px rgba(29, 111, 208, 0.25);
+  border-color: #fff;
+  box-shadow: 0 0 0 4px var(--glow);
 }
 
 .swatch[aria-pressed="true"]::after {
@@ -259,11 +312,11 @@ input[type="text"]:focus-visible {
   inset: 0;
   display: grid;
   place-items: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
 }
 
 .swatch:disabled {
-  opacity: 0.3;
+  opacity: 0.25;
 }
 
 .toggles {
@@ -281,8 +334,8 @@ input[type="text"]:focus-visible {
 }
 
 .toggle[aria-pressed="true"] {
-  background: var(--right-soft);
-  border-color: var(--right);
+  background: rgba(124, 58, 237, 0.22);
+  border-color: var(--accent-bright);
 }
 
 .toggle .toggle-state {
@@ -292,7 +345,7 @@ input[type="text"]:focus-visible {
 }
 
 .error {
-  color: #b02020;
+  color: #fb7185;
   font-size: 20px;
   font-weight: 600;
   margin-top: 12px;
@@ -323,7 +376,7 @@ input[type="text"]:focus-visible {
 }
 
 .badge {
-  background: #fff;
+  background: var(--card-2);
   border: 2px solid var(--line);
   border-radius: 999px;
   padding: 8px 18px;
@@ -333,31 +386,97 @@ input[type="text"]:focus-visible {
 
 .badge-turn {
   background: var(--accent);
-  border-color: var(--accent-dark);
+  border-color: var(--accent-bright);
   color: #fff;
+  box-shadow: 0 0 16px var(--glow);
 }
 
 .track {
-  background: var(--card);
+  background: linear-gradient(180deg, #120c1c, #0e0916);
   border: 2px solid var(--line);
   border-radius: var(--radius);
-  padding: 14px 16px 6px;
-  box-shadow: var(--shadow);
+  padding: 14px 16px 8px;
+  box-shadow: var(--shadow), inset 0 0 40px rgba(124, 58, 237, 0.12);
   margin-bottom: 20px;
 }
 
 .lane {
   display: grid;
-  grid-template-columns: 190px 1fr;
-  gap: 14px;
+  grid-template-columns: 56px 190px 1fr;
+  gap: 12px;
   align-items: center;
   padding: 8px 10px;
   border-radius: 10px;
+  transition: background-color 0.2s;
+}
+
+.lane + .lane {
+  margin-top: 4px;
 }
 
 .lane.is-current {
-  background: #eaf2fd;
-  box-shadow: inset 0 0 0 3px var(--accent);
+  background: rgba(124, 58, 237, 0.18);
+  box-shadow: inset 0 0 0 3px var(--accent-bright), 0 0 18px var(--glow);
+}
+
+/* Live position, F1 timing-tower style */
+.lane-pos {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 48px;
+  border-radius: 8px;
+  background: #000;
+  border: 2px solid var(--line);
+  font-size: 22px;
+  font-weight: 900;
+  font-style: italic;
+  font-variant-numeric: tabular-nums;
+}
+
+.lane-pos.is-leader {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.pos-move {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 6px;
+  animation: pos-pop 1.6s ease-out forwards;
+}
+
+.pos-move.is-up {
+  background: var(--right);
+  color: #04231a;
+}
+
+.pos-move.is-down {
+  background: var(--wrong);
+  color: #2a1203;
+}
+
+@keyframes pos-pop {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  20% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
 }
 
 .lane-info {
@@ -379,12 +498,12 @@ input[type="text"]:focus-visible {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 2px solid rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.4);
   flex: 0 0 auto;
 }
 
 .lane-stats {
-  font-size: 17px;
+  font-size: 16px;
   color: var(--ink-soft);
   font-variant-numeric: tabular-nums;
 }
@@ -392,23 +511,43 @@ input[type="text"]:focus-visible {
 .lane-turn {
   font-size: 15px;
   font-weight: 700;
-  color: var(--accent-dark);
+  color: var(--accent-bright);
 }
 
+/* Road: asphalt, red/white kerbs top and bottom, dashed centre line,
+   chequered start/finish at the right edge, grid box at the left. */
 .lane-road {
   position: relative;
-  height: 62px;
-  background: var(--asphalt);
+  height: 68px;
   border-radius: 8px;
-  background-image: linear-gradient(
-    to right,
-    var(--asphalt-line) 0 28px,
-    transparent 28px 56px
-  );
-  background-size: 56px 4px;
-  background-position: 0 50%;
-  background-repeat: repeat-x;
+  background-color: var(--asphalt);
+  background-image:
+    repeating-linear-gradient(90deg, var(--kerb-a) 0 14px, var(--kerb-b) 14px 28px),
+    repeating-linear-gradient(90deg, var(--kerb-a) 0 14px, var(--kerb-b) 14px 28px),
+    linear-gradient(to right, var(--asphalt-line) 0 24px, transparent 24px 52px);
+  background-size:
+    100% 5px,
+    100% 5px,
+    52px 2px;
+  background-position:
+    0 0,
+    0 100%,
+    0 50%;
+  background-repeat: no-repeat, no-repeat, repeat-x;
   overflow: hidden;
+}
+
+.lane-road::before {
+  /* grid slot */
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 9px;
+  bottom: 9px;
+  width: 110px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-right: none;
+  border-radius: 4px 0 0 4px;
 }
 
 .lane-road::after {
@@ -417,22 +556,79 @@ input[type="text"]:focus-visible {
   top: 0;
   bottom: 0;
   right: 0;
-  width: 10px;
-  background: repeating-conic-gradient(#fff 0 25%, #222 0 50%) 0 0 / 10px 10px;
+  width: 14px;
+  background: repeating-conic-gradient(#fff 0 25%, #111 0 50%) 0 0 / 14px 14px;
 }
 
 .car {
   position: absolute;
   top: 50%;
-  left: calc(var(--pct, 0) * (100% - 76px) / 100);
-  width: 68px;
-  height: 34px;
+  left: calc(var(--pct, 0) * (100% - 116px) / 100 + 8px);
+  width: 96px;
+  height: 38px;
   transform: translateY(-50%);
-  transition: left 1s ease-in-out;
+  transition: left 1s cubic-bezier(0.55, 0.05, 0.25, 1);
+  z-index: 1;
+}
+
+.car .f1 {
+  position: relative;
+  display: block;
+  width: 96px;
+  height: 38px;
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.6));
+  z-index: 1;
 }
 
 .car.no-anim {
   transition: none;
+}
+
+/* Speed streaks behind each car while the round plays out */
+.trail {
+  position: absolute;
+  top: 9px;
+  bottom: 9px;
+  right: 86px;
+  width: calc(var(--trail, 0) * 120px);
+  border-radius: 999px;
+  background: linear-gradient(to left, rgba(196, 181, 253, 0.85), rgba(168, 85, 247, 0.35) 45%, transparent);
+  opacity: 0;
+  transform-origin: right center;
+  pointer-events: none;
+}
+
+.track.is-moving .trail {
+  animation: trail 1s ease-out;
+}
+
+.track.is-moving .car .f1 {
+  animation: shake 0.12s linear infinite;
+}
+
+@keyframes trail {
+  0% {
+    opacity: 0;
+    transform: scaleX(0.2);
+  }
+  30% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(0.6);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1px);
+  }
 }
 
 .mile-markers {
@@ -440,18 +636,19 @@ input[type="text"]:focus-visible {
   justify-content: space-between;
   font-size: 14px;
   color: var(--ink-soft);
-  margin: 2px 10px 0 214px;
+  margin: 4px 10px 0 280px;
   font-variant-numeric: tabular-nums;
 }
 
 /* ----------------------------------------------------------- question card */
 
 .question-card {
-  background: var(--card);
+  background: linear-gradient(180deg, var(--card-2), var(--card));
   border: 2px solid var(--line);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 20px;
+  transition: background-color 0.2s, border-color 0.2s;
 }
 
 .question-card.flash-right {
@@ -474,8 +671,9 @@ input[type="text"]:focus-visible {
 }
 
 .subject-badge {
-  background: #eef3fa;
-  border: 2px solid var(--line);
+  background: rgba(124, 58, 237, 0.22);
+  border: 2px solid var(--accent);
+  color: #e9e1ff;
   border-radius: 999px;
   padding: 6px 16px;
   font-size: 18px;
@@ -489,7 +687,7 @@ input[type="text"]:focus-visible {
 }
 
 .countdown.is-low {
-  color: #b02020;
+  color: #fb7185;
 }
 
 .question-text {
@@ -533,18 +731,83 @@ input[type="text"]:focus-visible {
   margin-top: 18px;
 }
 
+/* --------------------------------------------------------- start lights */
+
+.overlay-lights {
+  background: rgba(5, 3, 9, 0.85);
+}
+
+.lights-box {
+  max-width: 560px;
+  background: #050308;
+  border: 2px solid var(--line);
+  box-shadow: 0 0 40px var(--glow);
+}
+
+.start-lights {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px;
+  background: #111;
+  border-radius: 12px;
+  border-top: 10px solid #222;
+}
+
+.light-pod {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  background: #000;
+  border-radius: 10px;
+}
+
+.light {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #2a1010;
+  box-shadow: inset 0 -4px 8px rgba(0, 0, 0, 0.6);
+  transition: background-color 0.05s;
+}
+
+.light-pod.is-on .light {
+  background: radial-gradient(circle at 40% 35%, #ff8a8a, #ef1c1c 55%, #8f0a0a);
+  box-shadow: 0 0 22px rgba(255, 40, 40, 0.85);
+}
+
+.lights-caption {
+  font-size: 34px;
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  margin: 18px 0 0;
+  min-height: 48px;
+}
+
+.start-lights.is-out + .lights-caption {
+  color: var(--right);
+}
+
 /* --------------------------------------------------------- results screen */
 
 .winner-banner {
-  background: linear-gradient(135deg, #fff6d8, #ffe9a8);
-  border: 3px solid #e0b43a;
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(124, 58, 237, 0.55), rgba(17, 8, 30, 0.9)),
+    repeating-conic-gradient(#fff 0 25%, #000 0 50%) 0 0 / 40px 40px;
+  border: 3px solid var(--accent-bright);
   border-radius: var(--radius);
   padding: 28px 20px;
   text-align: center;
   margin-bottom: 20px;
+  box-shadow: 0 0 40px var(--glow);
 }
 
 .trophy {
+  position: relative;
   font-size: 84px;
   display: block;
   animation: trophy-pop 1s ease-out;
@@ -565,14 +828,49 @@ input[type="text"]:focus-visible {
 }
 
 .winner-name {
-  font-size: 40px;
-  font-weight: 800;
+  position: relative;
+  font-size: 42px;
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
   margin: 6px 0;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
 }
 
 .winner-sub {
+  position: relative;
   font-size: 22px;
-  color: #6b5518;
+  color: #ede6ff;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+}
+
+.confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.confetti-bit {
+  position: absolute;
+  top: -16px;
+  width: 9px;
+  height: 14px;
+  border-radius: 2px;
+  opacity: 0;
+  animation-name: confetti-fall;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+}
+
+@keyframes confetti-fall {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(320px) rotate(var(--spin, 540deg));
+  }
 }
 
 table {
@@ -586,6 +884,7 @@ caption {
   font-size: 24px;
   font-weight: 700;
   padding-bottom: 10px;
+  color: var(--accent-bright);
 }
 
 th,
@@ -609,7 +908,8 @@ th.num {
 }
 
 tr.is-winner td {
-  background: #fff6d8;
+  background: rgba(245, 197, 66, 0.12);
+  color: var(--gold);
   font-weight: 700;
 }
 
@@ -618,7 +918,7 @@ tr.is-winner td {
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(21, 32, 43, 0.72);
+  background: rgba(5, 3, 9, 0.78);
   display: grid;
   place-items: center;
   padding: 20px;
@@ -626,7 +926,8 @@ tr.is-winner td {
 }
 
 .overlay-box {
-  background: #fff;
+  background: var(--card);
+  border: 2px solid var(--line);
   border-radius: var(--radius);
   padding: 32px;
   text-align: center;
@@ -640,6 +941,22 @@ tr.is-winner td {
 
 .overlay-box .row {
   justify-content: center;
+}
+
+/* --------------------------------------------------------------- footer */
+
+.site-footer {
+  flex: 0 0 auto;
+  border-top: 2px solid var(--line);
+  background: #07040c;
+  text-align: center;
+  padding: 16px 20px;
+}
+
+.site-footer p {
+  margin: 0;
+  font-size: 16px;
+  color: var(--ink-soft);
 }
 
 .sr-only {
@@ -664,15 +981,61 @@ tr.is-winner td {
 
 @media (max-width: 880px) {
   .lane {
-    grid-template-columns: 150px 1fr;
+    grid-template-columns: 48px 130px 1fr;
+    gap: 10px;
   }
 
   .mile-markers {
-    margin-left: 174px;
+    margin-left: 208px;
   }
 
   .question-text {
     font-size: 28px;
+  }
+
+  .light {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 600px) {
+  #app {
+    padding: 16px 16px 28px;
+  }
+
+  h1 {
+    font-size: 34px;
+  }
+
+  .lane {
+    grid-template-columns: 44px 1fr;
+  }
+
+  .lane-road {
+    grid-column: 1 / -1;
+  }
+
+  .mile-markers {
+    margin-left: 10px;
+  }
+
+  .start-lights {
+    gap: 6px;
+    padding: 10px;
+  }
+
+  .light-pod {
+    padding: 5px;
+  }
+
+  .light {
+    width: 30px;
+    height: 30px;
+  }
+
+  .lights-caption {
+    font-size: 26px;
   }
 }
 
@@ -681,7 +1044,10 @@ tr.is-winner td {
     transition: none;
   }
 
-  .trophy {
+  .trophy,
+  .pos-move,
+  .track.is-moving .trail,
+  .track.is-moving .car .f1 {
     animation: none;
   }
 }

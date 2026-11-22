@@ -33,6 +33,7 @@ export const CONFIG = {
   // --- Presentation timings (Q6, UI) ---
   feedbackMs: 2000, // how long right/wrong feedback stays on screen
   carAnimationMs: 1000, // car slide at the end of a round
+  startLightMs: 600, // gap between each of the five F1 start lights
 
   // --- Question bank shape (Q1, Q3, Q4) ---
   optionCount: 3,

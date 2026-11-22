@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Grade 2 car racing quiz game: answer Maths, Science and General Knowledge questions to speed up your car." />
-    <title>Racing Quiz</title>
+    <meta name="description" content="Grade 2 F1 racing quiz game: answer Maths, Science and General Knowledge questions to speed up your car." />
+    <title>F1 Racing Quiz</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="icon-192.png" />
     <link rel="manifest" href="manifest.webmanifest" />
-    <meta name="theme-color" content="#1d6fd0" />
+    <meta name="theme-color" content="#0b0712" />
     <meta name="mobile-web-app-capable" content="yes" />
     <link rel="stylesheet" href="styles.css" />
     <script src="sw-register.js" defer></script>
@@ -17,7 +17,7 @@
     <div id="app">
       <!-- ================================================= SETUP SCREEN -->
       <section id="screen-setup" class="screen" aria-labelledby="setup-title">
-        <h1 id="setup-title">&#127950; Racing Quiz</h1>
+        <h1 id="setup-title"><span class="title-flag" aria-hidden="true">&#127937;</span> F1 <span class="title-accent">Racing Quiz</span></h1>
         <p class="lead">
           Answer a question to speed up. Correct = +10 MPH, wrong = &minus;2 MPH.
           First car to 100 miles wins.
@@ -36,7 +36,7 @@
         </div>
 
         <div class="panel">
-          <h2>2. Names and car colours</h2>
+          <h2>2. Names and team colours</h2>
           <div class="driver-list" id="driver-list"></div>
         </div>
 
@@ -56,7 +56,7 @@
         </div>
 
         <div class="row">
-          <button type="button" class="btn-primary" id="start-race">Start race &#128663;</button>
+          <button type="button" class="btn-primary" id="start-race">Go to the grid &#127937;</button>
         </div>
         <p class="error" id="setup-error" role="alert"></p>
       </section>
@@ -95,6 +95,7 @@
       <section id="screen-results" class="screen" hidden aria-labelledby="results-title">
         <h1 id="results-title" class="sr-only">Race results</h1>
         <div class="winner-banner">
+          <div class="confetti" id="confetti" aria-hidden="true"></div>
           <span class="trophy" aria-hidden="true">&#127942;</span>
           <p class="winner-name" id="winner-name">&mdash;</p>
           <p class="winner-sub" id="winner-sub"></p>
@@ -121,6 +122,25 @@
           <button type="button" id="new-players">New players</button>
         </div>
       </section>
+    </div>
+
+    <footer class="site-footer">
+      <p>&copy; 2026 Aayansh Panda. All rights reserved.</p>
+    </footer>
+
+    <!-- ========================================== START LIGHTS OVERLAY -->
+    <div class="overlay overlay-lights" id="overlay-lights" hidden role="dialog" aria-modal="true" aria-labelledby="lights-title">
+      <div class="overlay-box lights-box">
+        <h2 id="lights-title" class="sr-only">Race start</h2>
+        <div class="start-lights" id="start-lights" aria-hidden="true">
+          <span class="light-pod"><span class="light"></span><span class="light"></span></span>
+          <span class="light-pod"><span class="light"></span><span class="light"></span></span>
+          <span class="light-pod"><span class="light"></span><span class="light"></span></span>
+          <span class="light-pod"><span class="light"></span><span class="light"></span></span>
+          <span class="light-pod"><span class="light"></span><span class="light"></span></span>
+        </div>
+        <p class="lights-caption" id="lights-caption" role="status" aria-live="assertive">Get ready&hellip;</p>
+      </div>
     </div>
 
     <!-- =============================================== PAUSE OVERLAY -->

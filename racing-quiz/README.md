@@ -1,9 +1,15 @@
-# Racing Quiz
+# F1 Racing Quiz
 
-A car racing quiz game for Grade 2 students. Up to 5 drivers share one device and
+An F1 racing quiz game for Grade 2 students, in a black & purple theme.
+© 2026 Aayansh Panda. All rights reserved. Up to 5 drivers share one device and
 race on a 100-mile track by answering Maths, General Science and General Knowledge
 questions. A correct answer adds 10 MPH, a wrong answer or a timeout takes away
 2 MPH, and the first car past 100 miles wins.
+
+Race extras: top-down F1 cars numbered per driver, a five-light F1 start
+sequence, live P1-P5 positions with gained/lost-place badges, kerbed lanes with a
+grid box and chequered finish, speed trails and an engine sweep while the cars
+move, and confetti on the results screen.
 
 Built from `Racing Quiz Game Requirements.pdf` and `SKILL_car racing.md` in the
 folder above.

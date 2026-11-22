@@ -56,6 +56,10 @@ const el = {
   overlayPause: $('overlay-pause'),
   resumeBtn: $('resume-btn'),
   quitBtn: $('quit-btn'),
+  overlayLights: $('overlay-lights'),
+  lights: $('start-lights'),
+  lightsCaption: $('lights-caption'),
+  confetti: $('confetti'),
 };
 
 /* ----------------------------------------------------------------- state */
@@ -81,6 +85,7 @@ let laneEls = [];
 let timerId = null;
 let remaining = 0;
 let pendingTimeout = null;
+let lastPlaces = []; // place per driver index after the previous round
 
 /* ----------------------------------------------------------- small utils */
 
@@ -234,27 +239,53 @@ function renderSetup() {
 
 /* ------------------------------------------------------------ track render */
 
-function carSvg(hex) {
+/**
+ * Top-down Formula 1 car, nose pointing right (towards the finish line).
+ * Body and wings take the driver's colour; the number sits on the engine cover.
+ */
+function carSvg(hex, number) {
   return `
-    <svg class="car no-anim" viewBox="0 0 68 34" width="68" height="34" aria-hidden="true" focusable="false">
-      <path d="M2 25h64v-6c0-2.2-1.6-3.6-3.8-3.6h-5.4l-6.3-7.6C49.3 6.6 47.9 6 46.4 6H24.6c-1.6 0-3 .7-4 1.9l-5.4 7.5H5.8C3.6 15.4 2 16.8 2 19z"
-            fill="${hex}" stroke="rgba(0,0,0,0.4)" stroke-width="1.6" stroke-linejoin="round" />
-      <path d="M25 9.5h10.5v5.9H20.4z" fill="#d6e9ff" opacity="0.95" />
-      <path d="M38 9.5h7.4l5 5.9H38z" fill="#d6e9ff" opacity="0.95" />
-      <circle cx="18" cy="26" r="6.4" fill="#1d2329" />
-      <circle cx="18" cy="26" r="2.5" fill="#c6d1da" />
-      <circle cx="50" cy="26" r="6.4" fill="#1d2329" />
-      <circle cx="50" cy="26" r="2.5" fill="#c6d1da" />
+    <svg class="f1" viewBox="0 0 80 32" width="80" height="32" aria-hidden="true" focusable="false">
+      <!-- rear wing -->
+      <rect x="1" y="4" width="6" height="24" rx="1.5" fill="#111" />
+      <rect x="1" y="4" width="6" height="3" fill="${hex}" />
+      <rect x="1" y="25" width="6" height="3" fill="${hex}" />
+      <!-- rear tyres -->
+      <rect x="8" y="0.5" width="13" height="7.5" rx="2.5" fill="#15121c" stroke="#d9d4e4" stroke-width="1.2" />
+      <rect x="8" y="24" width="13" height="7.5" rx="2.5" fill="#15121c" stroke="#d9d4e4" stroke-width="1.2" />
+      <!-- front tyres -->
+      <rect x="53" y="1.5" width="11" height="6.5" rx="2.2" fill="#15121c" stroke="#d9d4e4" stroke-width="1.2" />
+      <rect x="53" y="24" width="11" height="6.5" rx="2.2" fill="#15121c" stroke="#d9d4e4" stroke-width="1.2" />
+      <!-- suspension arms -->
+      <path d="M15 8l5 4M15 24l5-4M58 8l-4 5.5M58 24l-4-5.5" stroke="#333" stroke-width="1.4" />
+      <!-- body, sidepods and nose -->
+      <path d="M7 13.5L13 11 22 8.5h13l11 3 8 2.6 18 0.9v2l-18 0.9-8 2.6-11 3H22L13 21 7 18.5z"
+            fill="${hex}" stroke="rgba(0,0,0,0.55)" stroke-width="1" stroke-linejoin="round" />
+      <!-- front wing -->
+      <rect x="70" y="2.5" width="7" height="27" rx="1.5" fill="${hex}" stroke="rgba(0,0,0,0.55)" stroke-width="1" />
+      <rect x="74.5" y="2.5" width="2.5" height="27" rx="1" fill="#111" />
+      <!-- cockpit, helmet and halo -->
+      <ellipse cx="40" cy="16" rx="6.5" ry="3.6" fill="#0c0a12" />
+      <circle cx="39" cy="16" r="2.6" fill="#f5f0ff" stroke="#111" stroke-width="0.8" />
+      <path d="M33 13.2q9 -2.4 12.5 2.8q-3.5 5.2 -12.5 2.8" fill="none" stroke="#2a2a2a" stroke-width="1.5" />
+      <!-- engine cover number -->
+      <text x="25.5" y="18.6" font-size="8" font-weight="800" text-anchor="middle"
+            fill="#fff" stroke="rgba(0,0,0,0.6)" stroke-width="0.5"
+            font-family="Segoe UI, Verdana, sans-serif">${number}</text>
     </svg>`;
 }
 
 function buildTrack() {
   el.track.innerHTML = '';
   laneEls = [];
+  lastPlaces = race.drivers.map(() => 1);
 
   race.drivers.forEach((driver, i) => {
     const lane = document.createElement('div');
     lane.className = 'lane';
+
+    const pos = document.createElement('div');
+    pos.className = 'lane-pos';
 
     const info = document.createElement('div');
     info.className = 'lane-info';
@@ -279,12 +310,16 @@ function buildTrack() {
 
     const road = document.createElement('div');
     road.className = 'lane-road';
-    road.innerHTML = carSvg(colorHex(driver.color));
 
-    lane.append(info, road);
+    const car = document.createElement('div');
+    car.className = 'car no-anim';
+    car.innerHTML = `<span class="trail" aria-hidden="true"></span>${carSvg(colorHex(driver.color), i + 1)}`;
+    road.append(car);
+
+    lane.append(pos, info, road);
     el.track.append(lane);
 
-    laneEls.push({ lane, stats, turn, car: road.querySelector('.car') });
+    laneEls.push({ lane, pos, stats, turn, car });
   });
 
   const markers = document.createElement('div');
@@ -296,7 +331,7 @@ function buildTrack() {
   }
   el.track.append(markers);
 
-  // First paint: put the cars at the start line without sliding.
+  // First paint: put the cars on the grid without sliding.
   updateTrack();
   requestAnimationFrame(() => {
     for (const lane of laneEls) {
@@ -305,8 +340,17 @@ function buildTrack() {
   });
 }
 
-function updateTrack() {
+/**
+ * @param {boolean} [showMoves] true right after a round, to flash
+ *   gained / lost places next to the position number.
+ */
+function updateTrack(showMoves = false) {
   const showTurn = phase === 'question' || phase === 'feedback' || phase === 'paused';
+  const places = [];
+  for (const entry of ranking(race)) {
+    places[entry.index] = entry.place;
+  }
+  const topSpeed = Math.max(1, ...race.drivers.map((driver) => driver.speed));
 
   race.drivers.forEach((driver, i) => {
     const lane = laneEls[i];
@@ -315,12 +359,32 @@ function updateTrack() {
     }
     const pct = Math.min((driver.distance / CONFIG.trackLength) * 100, 100);
     lane.car.style.setProperty('--pct', pct.toFixed(2));
+    lane.car.style.setProperty('--trail', (driver.speed / topSpeed).toFixed(2));
     lane.stats.textContent = `${driver.speed} MPH · ${formatMiles(driver.distance)} / ${CONFIG.trackLength} miles`;
+
+    const place = places[i] ?? i + 1;
+    const delta = showMoves ? lastPlaces[i] - place : 0;
+    lane.pos.innerHTML = '';
+    const posText = document.createElement('span');
+    posText.textContent = `P${place}`;
+    lane.pos.append(posText);
+    if (delta !== 0) {
+      const move = document.createElement('span');
+      move.className = delta > 0 ? 'pos-move is-up' : 'pos-move is-down';
+      move.textContent = delta > 0 ? `▲${delta}` : `▼${-delta}`;
+      move.title = delta > 0 ? `Gained ${delta}` : `Lost ${-delta}`;
+      lane.pos.append(move);
+    }
+    lane.pos.classList.toggle('is-leader', place === 1 && driver.distance > 0);
 
     const isCurrent = showTurn && i === race.turnIndex && !race.finished;
     lane.lane.classList.toggle('is-current', isCurrent);
     lane.turn.textContent = isCurrent ? '▶ Your turn' : '';
   });
+
+  if (showMoves) {
+    lastPlaces = places;
+  }
 }
 
 function renderBadges() {
@@ -409,6 +473,56 @@ function playSoftWrong() {
     osc.start(now + offset);
     osc.stop(now + offset + 0.3);
   });
+}
+
+/** Start-light beep: short and low for each red light, high for "lights out". */
+function playBeep(high = false) {
+  const ctx = ensureAudio();
+  if (!ctx) {
+    return;
+  }
+  const now = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  osc.type = 'square';
+  osc.frequency.setValueAtTime(high ? 880 : 440, now);
+  const gain = ctx.createGain();
+  const length = high ? 0.5 : 0.18;
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.linearRampToValueAtTime(0.09, now + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + length);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(now);
+  osc.stop(now + length + 0.02);
+}
+
+/** Engine sweep while the cars move; pitch and loudness follow the top speed. */
+function playRaceSweep(topSpeed) {
+  const ctx = ensureAudio();
+  if (!ctx || topSpeed <= 0) {
+    return;
+  }
+  const now = ctx.currentTime;
+  const seconds = CONFIG.carAnimationMs / 1000;
+  const peak = Math.min(120 + topSpeed * 3, 520);
+
+  const osc = ctx.createOscillator();
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(peak * 0.55, now);
+  osc.frequency.exponentialRampToValueAtTime(peak, now + seconds * 0.6);
+  osc.frequency.exponentialRampToValueAtTime(peak * 0.7, now + seconds);
+
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(1400, now);
+
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.linearRampToValueAtTime(Math.min(0.06 + topSpeed / 1000, 0.18), now + seconds * 0.3);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + seconds);
+
+  osc.connect(filter).connect(gain).connect(ctx.destination);
+  osc.start(now);
+  osc.stop(now + seconds + 0.05);
 }
 
 /* ------------------------------------------------------------- read aloud */
@@ -514,7 +628,57 @@ function startRace() {
   ensureAudio(); // the click that started the race also unlocks audio
   showScreen('race');
   buildTrack();
-  nextTurn();
+  renderBadges();
+  startLights();
+}
+
+/**
+ * F1-style start: five red lights come on one by one, then go out together.
+ * Purely for show - no question is on screen and the timer is not running.
+ */
+function startLights() {
+  phase = 'lights';
+  el.pauseBtn.disabled = true;
+  el.readAloud.disabled = true;
+  el.options.innerHTML = '';
+  el.questionCard.className = 'question-card';
+  el.countdown.textContent = '';
+  el.subjectBadge.textContent = 'Grid';
+  el.questionText.textContent = 'Drivers, get ready…';
+  el.feedback.className = 'feedback';
+  el.feedback.textContent = '';
+
+  const bulbs = [...el.lights.querySelectorAll('.light-pod')];
+  for (const bulb of bulbs) {
+    bulb.classList.remove('is-on');
+  }
+  el.lights.classList.remove('is-out');
+  el.lightsCaption.textContent = 'Get ready…';
+  el.overlayLights.hidden = false;
+
+  const step = (n) => {
+    if (n < bulbs.length) {
+      bulbs[n].classList.add('is-on');
+      el.lightsCaption.textContent = String(n + 1);
+      playBeep(false);
+      later(CONFIG.startLightMs, () => step(n + 1));
+      return;
+    }
+    // all five lit: short hold, then lights out
+    later(CONFIG.startLightMs, () => {
+      for (const bulb of bulbs) {
+        bulb.classList.remove('is-on');
+      }
+      el.lights.classList.add('is-out');
+      el.lightsCaption.textContent = 'Lights out - GO!';
+      playBeep(true);
+      later(CONFIG.startLightMs, () => {
+        el.overlayLights.hidden = true;
+        nextTurn();
+      });
+    });
+  };
+  later(CONFIG.startLightMs, () => step(0));
 }
 
 function nextTurn() {
@@ -660,9 +824,12 @@ function moveCars() {
 
   race = endRound(race);
   renderBadges();
-  updateTrack();
+  el.track.classList.add('is-moving');
+  updateTrack(true);
+  playRaceSweep(Math.max(...race.drivers.map((driver) => driver.speed)));
 
   later(CONFIG.carAnimationMs, () => {
+    el.track.classList.remove('is-moving');
     nextTurn();
   });
 }
@@ -728,7 +895,27 @@ function showResults() {
   }
 
   showScreen('results');
+  launchConfetti(winners.map((winner) => colorHex(winner.color)));
   el.playAgain.focus();
+}
+
+/** Purple, white, gold and the winner's own colour fall over the banner. */
+function launchConfetti(extraColors) {
+  el.confetti.innerHTML = '';
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+    return;
+  }
+  const colors = ['#a855f7', '#c4b5fd', '#ffffff', '#f5c542', ...extraColors];
+  for (let i = 0; i < 60; i++) {
+    const bit = document.createElement('span');
+    bit.className = 'confetti-bit';
+    bit.style.left = `${Math.random() * 100}%`;
+    bit.style.background = colors[i % colors.length];
+    bit.style.animationDelay = `${Math.random() * 0.8}s`;
+    bit.style.animationDuration = `${2 + Math.random() * 1.6}s`;
+    bit.style.setProperty('--spin', `${Math.random() > 0.5 ? '' : '-'}${360 + Math.random() * 360}deg`);
+    el.confetti.append(bit);
+  }
 }
 
 /* ----------------------------------------------------------------- pause */
@@ -758,6 +945,8 @@ function resumeRace() {
 
 function quitToSetup() {
   el.overlayPause.hidden = true;
+  el.overlayLights.hidden = true;
+  el.track.classList.remove('is-moving');
   clearTimer();
   clearPending();
   stopSpeech();

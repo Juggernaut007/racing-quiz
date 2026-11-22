@@ -1,13 +1,13 @@
 {
-  "name": "Racing Quiz",
-  "short_name": "Racing Quiz",
+  "name": "F1 Racing Quiz",
+  "short_name": "F1 Quiz",
   "description": "Grade 2 car racing quiz game: answer Maths, Science and General Knowledge questions to speed up your car.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "landscape",
-  "background_color": "#f4f7fb",
-  "theme_color": "#1d6fd0",
+  "background_color": "#0b0712",
+  "theme_color": "#7c3aed",
   "icons": [
     { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
